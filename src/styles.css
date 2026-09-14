@@ -48,6 +48,28 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
 .player-actions button, .confirmation button, .error-page button { background: var(--forest); border: 1px solid var(--forest); border-radius: var(--radius); color: white; cursor: pointer; padding: 0.6rem 0.85rem; }
 .player-actions .secondary { background: transparent; color: var(--forest-dark); }
 .player-actions .remove { background: transparent; border-color: var(--danger); color: var(--danger); }
+.formation-section { margin-block-start: var(--space-4); }
+.formation-picker { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-block-end: var(--space-2); }
+.formation-choice { background: transparent; border: 1px solid var(--forest); border-radius: 100vw; color: var(--forest-dark); cursor: pointer; padding: 0.5rem 0.9rem; }
+.formation-choice.active { background: var(--forest); color: #fff; }
+.pitch-layout { display: grid; gap: var(--space-2); grid-template-columns: minmax(12rem, 0.55fr) minmax(0, 1.45fr); }
+.starter-bank { background: var(--paper); border: 1px solid var(--line); padding: var(--space-2); }
+.starter-bank h3 { margin-block: 0 var(--space-1); }
+.starter-bank p { color: var(--muted); font-family: Arial, sans-serif; font-size: 0.85rem; line-height: 1.4; }
+.starter-bank ul { display: grid; gap: 0.4rem; list-style: none; margin: 0; padding: 0; }
+.starter-chip { background: transparent; border: 1px solid var(--line); border-radius: var(--radius); color: var(--ink); cursor: grab; inline-size: 100%; padding: 0.5rem; text-align: start; }
+.starter-chip.selected { background: var(--forest-dark); border-color: var(--forest-dark); color: #fff; }
+.pitch { background-color: #367b48; background-image: linear-gradient(90deg, transparent 49.7%, rgba(255, 255, 255, 0.7) 49.7%, rgba(255, 255, 255, 0.7) 50.3%, transparent 50.3%); border: 0.35rem solid #f7fbec; box-shadow: inset 0 0 0 1px rgba(18, 61, 39, 0.75); display: grid; grid-template-rows: repeat(4, 1fr); min-block-size: 34rem; padding: var(--space-2); }
+.position-row { align-items: center; display: grid; gap: var(--space-1); grid-template-columns: repeat(var(--players-in-row), 1fr); }
+.position-row.goalkeeper { --players-in-row: 1; }
+.position-row.defence { --players-in-row: 4; }
+.position-row.midfield { --players-in-row: 5; }
+.position-row.attack { --players-in-row: 3; }
+.position-slot { background: #fbfcf8; border: 2px dashed var(--forest-dark); border-radius: 50%; color: var(--ink); cursor: pointer; justify-self: center; min-block-size: 5rem; padding: 0.35rem; text-align: center; inline-size: min(100%, 7.5rem); }
+.position-slot.occupied { background: #e9b86e; border-style: solid; }
+.position-slot span, .position-slot strong { display: block; font-family: Arial, sans-serif; font-size: 0.7rem; line-height: 1.2; }
+.position-slot strong { font-size: 0.8rem; margin-block-start: 0.25rem; }
+.empty-state { background: var(--paper); border: 1px dashed var(--line); color: var(--muted); padding: var(--space-2); }
 .confirmation { background: var(--field); border: 1px solid var(--line); margin-block-start: var(--space-4); padding: var(--space-3); }
 .confirmation p { line-height: 1.5; }
 .sr-only { block-size: 1px; clip: rect(0, 0, 0, 0); inline-size: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; }
@@ -57,6 +79,8 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
   .selection-summary { grid-template-columns: 1fr; }
   .section-heading { align-items: start; flex-direction: column; gap: var(--space-1); }
   .player-row { align-items: start; flex-direction: column; }
+  .pitch-layout { grid-template-columns: 1fr; }
+  .pitch { min-block-size: 28rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
