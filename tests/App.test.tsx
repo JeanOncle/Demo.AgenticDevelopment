@@ -21,4 +21,19 @@ describe('App', () => {
     await user.click(screen.getAllByRole('button', { name: 'Basis' })[0])
     expect(screen.getByRole('alert')).toHaveTextContent('basisopstelling bevat al 11 spelers')
   })
+
+  it('changes formation and places a selected starter through the accessible alternative', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getAllByRole('button', { name: 'Basis' })[0])
+    await user.click(screen.getByRole('button', { name: /Milan de Boer/ }))
+    await user.click(screen.getByRole('button', { name: /Doelman: vrij/ }))
+
+    expect(screen.getByRole('button', { name: /Doelman: Milan de Boer/ })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: '4-3-3' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('formatie is gewijzigd')
+    expect(screen.getByText('1 nog niet geplaatst')).toBeInTheDocument()
+  })
 })
