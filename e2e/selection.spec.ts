@@ -15,11 +15,11 @@ test('a manager can place starters on a selected formation', async ({ page }) =>
   await page.goto('/')
 
   await page.getByRole('button', { name: 'Basis' }).first().click()
-  await page.getByRole('button', { name: /Milan de Boer/ }).dragTo(
+  await page.getByRole('button', { name: /Niek/ }).dragTo(
     page.getByRole('button', { name: /Doelman: vrij/ }),
   )
 
-  await expect(page.getByRole('button', { name: /Doelman: Milan de Boer/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Doelman: Niek/ })).toBeVisible()
   await page.getByRole('button', { name: '4-3-3' }).click()
   await expect(page.getByText('1 nog niet geplaatst')).toBeVisible()
 })
