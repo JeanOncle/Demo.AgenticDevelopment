@@ -1,4 +1,4 @@
-import { useMemo, useState, type DragEvent } from 'react'
+import { useMemo, useState, type CSSProperties, type DragEvent } from 'react'
 import { players } from './data/players'
 import { clearCaptainIfRemoved, setCaptain } from './domain/captain'
 import {
@@ -235,11 +235,15 @@ export default function App() {
             </div>
 
             <div className="pitch" aria-label={`Voetbalveld in formatie ${formation.label}`}>
-              {(['attack', 'midfield', 'defence', 'goalkeeper'] as const).map((group) => (
-                <div className={`position-row ${group}`} key={group}>
-                  {formation.positions
-                    .filter((position) => position.group === group)
-                    .map((position) => {
+              {(['attack', 'midfield', 'defence', 'goalkeeper'] as const).map((group) => {
+                const groupPositions = formation.positions.filter((position) => position.group === group)
+                return (
+                  <div
+                    className={`position-row ${group}`}
+                    key={group}
+                    style={{ '--players-in-row': groupPositions.length } as CSSProperties}
+                  >
+                    {groupPositions.map((position) => {
                       const player = players.find((candidate) => candidate.id === placements[position.id])
                       const isCaptain = player?.id === captainId
                       const className = ['position-slot', player ? 'occupied' : '', isCaptain ? 'captain' : '']
@@ -266,8 +270,9 @@ export default function App() {
                         </button>
                       )
                     })}
-                </div>
-              ))}
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}
