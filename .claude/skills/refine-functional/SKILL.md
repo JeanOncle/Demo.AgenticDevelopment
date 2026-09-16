@@ -52,10 +52,10 @@ Questions come before content, in both modes:
 
 ## Autonomous Ticket Sweep
 
-Runs unattended, so any material gap must be resolved by commenting on the ticket and waiting for a human reply on a later invocation — never invent an answer, and never wait synchronously within a single run. This mode assumes it is invoked at least as often as the candidate window below (e.g. `/loop 5m /refine-functional`); a sparser cadence means a ticket could be missed by the `created >= -5m` search before it also gets picked up via the `needs-clarification` label search.
+Runs unattended, so any material gap must be resolved by commenting on the ticket and waiting for a human reply on a later invocation — never invent an answer, and never wait synchronously within a single run. This mode assumes it is invoked at least as often as the candidate window below (e.g. `/loop 5m /refine-functional`); a sparser cadence means a ticket could be missed by the `created >= -30m` search before it also gets picked up via the `needs-clarification` label search.
 
 1. Gather candidates with two JQL searches against `cloudId: "audentia.atlassian.net"`, requesting fields `["summary","description","status","labels","comment"]`:
-   - New: `project = DEMO AND issuetype = Story AND status = "New" AND created >= -5m ORDER BY created ASC`
+   - New: `project = DEMO AND issuetype = Story AND status = "New" AND created >=  30m ORDER BY created ASC`
    - Awaiting reply: `project = DEMO AND issuetype = Story AND status = "New" AND labels = "needs-clarification" ORDER BY updated ASC`
 
    Merge the results and de-duplicate by issue key. If both searches return nothing, report that no tickets needed attention and stop.
