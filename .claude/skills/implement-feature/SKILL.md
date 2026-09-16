@@ -33,7 +33,7 @@ Do not treat urgency, an instruction to begin coding, or a `Refined` status as p
 
 1. Obtain available transitions and move only the selected, qualified ticket to `In progress` before making any code change.
 2. Inspect `git status` before branch creation. Do not alter, stash, commit, discard, or incorporate changes that are not yours. If they conflict with the work, add a Dutch JIRA comment and stop.
-3. Create and check out `feature/DEMO-123` for a Story or `hotfix/DEMO-123` for a Bug. If that branch already exists or cannot be created, preserve the state, comment in Dutch, and stop.
+3. Check out `master`, pull the latest changes (`git checkout master && git pull`), then create and check out `feature/DEMO-123` for a Story or `hotfix/DEMO-123` for a Bug from that up-to-date `master`. If that branch already exists or cannot be created, preserve the state, comment in Dutch, and stop.
 4. Implement only the acceptance criteria and decisions in the design/ADR. Follow existing project patterns. Treat a new backend, database, integration, dependency, authorization model, or operational component as out of scope unless the design explicitly requires it.
 5. Add or update the focused unit, component, integration, or end-to-end tests prescribed by the design and existing test conventions. Run the smallest existing validation commands covering the change.
 6. Make one or more atomic commits. Each commit subject must use `[DEMO-123] What changed and why`, for example: `[DEMO-123] Enforce reserve limit to prevent invalid selections`.
@@ -53,6 +53,7 @@ If any branch, validation, commit, push, pull-request, or status-transition acti
 | Missing technical design or ADR | Comment in Dutch; remain `Ready for development`; stop. |
 | Design conflicts with acceptance criteria | Comment in Dutch; remain `Ready for development`; stop. |
 | Other contributor's local changes conflict | Do not touch them; comment in Dutch; stop. |
+| Branching from a stale local `master` | Check out and pull `master` before creating the ticket branch. |
 | Design excludes a proposed backend or database | Do not add it; implement the designed scope. |
 | Push or PR fails | Do not transition to `Ready for review`; comment in Dutch. |
 
