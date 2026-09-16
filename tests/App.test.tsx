@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from '../src/App'
+import { formations, getFormation, type FormationId } from '../src/domain/formation'
 
 describe('App', () => {
   it('shows selection counts, surfaces rule errors, and blocks confirmation until complete', async () => {
@@ -65,4 +66,26 @@ describe('App', () => {
         .filter((button) => button.getAttribute('aria-pressed') === 'true'),
     ).toHaveLength(0)
   })
+
+  it.each(formations.map((formation) => formation.id))(
+    'aligns every position line in the %s formation with the exact number of positions in that line',
+    async (formationId: FormationId) => {
+      const user = userEvent.setup()
+      const { container } = render(<App />)
+
+      await user.click(screen.getAllByRole('button', { name: 'Basis' })[0])
+      await user.click(screen.getByRole('button', { name: formationId }))
+
+      const formation = getFormation(formationId)
+      const groups = ['goalkeeper', 'defence', 'midfield', 'attack'] as const
+
+      for (const group of groups) {
+        const expectedCount = formation.positions.filter((position) => position.group === group).length
+        const row = container.querySelector(`.position-row.${group}`)
+        expect(row).not.toBeNull()
+        expect(row?.querySelectorAll('.position-slot')).toHaveLength(expectedCount)
+        expect((row as HTMLElement).style.getPropertyValue('--players-in-row')).toBe(String(expectedCount))
+      }
+    },
+  )
 })
