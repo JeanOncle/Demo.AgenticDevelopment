@@ -36,4 +36,33 @@ describe('App', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('formatie is gewijzigd')
     expect(screen.getByText('1 nog niet geplaatst')).toBeInTheDocument()
   })
+
+  it('only offers the captain button to starters, moves the marking to a newly chosen captain, and clears it on removal', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+
+    await user.click(screen.getAllByRole('button', { name: 'Basis' })[0])
+    await user.click(screen.getAllByRole('button', { name: 'Reserve' })[0])
+
+    expect(screen.getAllByRole('button', { name: 'Aanvoerder' })).toHaveLength(1)
+
+    await user.click(screen.getAllByRole('button', { name: 'Aanvoerder' })[0])
+    expect(screen.getAllByRole('button', { name: 'Aanvoerder' })[0]).toHaveAttribute('aria-pressed', 'true')
+    expect(container.querySelectorAll('.captain').length).toBeGreaterThan(0)
+
+    await user.click(screen.getAllByRole('button', { name: 'Basis' })[0])
+    await user.click(screen.getAllByRole('button', { name: 'Aanvoerder' })[1])
+
+    const captainButtons = screen.getAllByRole('button', { name: 'Aanvoerder' })
+    expect(captainButtons.filter((button) => button.getAttribute('aria-pressed') === 'true')).toHaveLength(1)
+    expect(captainButtons[0]).toHaveAttribute('aria-pressed', 'false')
+    expect(captainButtons[1]).toHaveAttribute('aria-pressed', 'true')
+
+    await user.click(screen.getAllByRole('button', { name: 'Verwijder' })[2])
+    expect(
+      screen
+        .getAllByRole('button', { name: 'Aanvoerder' })
+        .filter((button) => button.getAttribute('aria-pressed') === 'true'),
+    ).toHaveLength(0)
+  })
 })

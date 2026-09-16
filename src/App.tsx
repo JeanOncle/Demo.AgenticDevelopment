@@ -1,5 +1,6 @@
 import { useMemo, useState, type DragEvent } from 'react'
 import { players } from './data/players'
+import { clearCaptainIfRemoved, setCaptain } from './domain/captain'
 import {
   formations,
   getFormation,
@@ -27,6 +28,7 @@ export default function App() {
   const [formationId, setFormationId] = useState<FormationId>('4-4-2')
   const [placements, setPlacements] = useState<Placements>({})
   const [selectedStarterId, setSelectedStarterId] = useState<string>()
+  const [captainId, setCaptainId] = useState<string>()
   const isValid = isValidSelection(selection)
   const selectedCount = selection.starters.length + selection.substitutes.length
   const formation = getFormation(formationId)
@@ -48,10 +50,19 @@ export default function App() {
   const remove = (playerId: string): void => {
     setSelection((current) => removePlayer(current, playerId))
     setPlacements((current) => removePlayerPlacements(current, playerId))
+    setCaptainId((current) => clearCaptainIfRemoved(current, playerId))
     if (selectedStarterId === playerId) {
       setSelectedStarterId(undefined)
     }
     setMessage(undefined)
+  }
+
+  const assignCaptain = (playerId: string): void => {
+    const result = setCaptain(selection, playerId)
+    setMessage(result.error)
+    if (!result.error) {
+      setCaptainId(result.captainId)
+    }
   }
 
   const placeStarter = (playerId: string, positionId: string): void => {
@@ -124,10 +135,13 @@ export default function App() {
         <ul className="player-list">
           {players.map((player) => {
             const status = playerStatuses.get(player.id)
+            const isCaptain = player.id === captainId
             return (
               <li className="player-row" key={player.id}>
                 <div>
-                  <strong>{player.name}</strong>
+                  <strong className={isCaptain ? 'captain' : undefined}>
+                    {player.name} {isCaptain ? '(Aanvoerder)' : ''}
+                  </strong>
                   <span aria-live="polite">{status ?? 'Niet geselecteerd'}</span>
                 </div>
                 <div className="player-actions" aria-label={`Acties voor ${player.name}`}>
@@ -141,9 +155,21 @@ export default function App() {
                       </button>
                     </>
                   ) : (
-                    <button type="button" className="remove" onClick={() => remove(player.id)}>
-                      Verwijder
-                    </button>
+                    <>
+                      {status === 'Basis' && (
+                        <button
+                          type="button"
+                          className={isCaptain ? 'captain-toggle active' : 'captain-toggle'}
+                          aria-pressed={isCaptain}
+                          onClick={() => assignCaptain(player.id)}
+                        >
+                          Aanvoerder
+                        </button>
+                      )}
+                      <button type="button" className="remove" onClick={() => remove(player.id)}>
+                        Verwijder
+                      </button>
+                    </>
                   )}
                 </div>
               </li>
@@ -186,17 +212,21 @@ export default function App() {
                 {starters.map((player) => {
                   const isSelected = player.id === selectedStarterId
                   const isPlaced = !unplacedStarters.includes(player.id)
+                  const isCaptain = player.id === captainId
+                  const className = ['starter-chip', isSelected ? 'selected' : '', isCaptain ? 'captain' : '']
+                    .filter(Boolean)
+                    .join(' ')
                   return (
                     <li key={player.id}>
                       <button
                         type="button"
-                        className={isSelected ? 'starter-chip selected' : 'starter-chip'}
+                        className={className}
                         aria-pressed={isSelected}
                         draggable
                         onClick={() => setSelectedStarterId(isSelected ? undefined : player.id)}
                         onDragStart={(event) => event.dataTransfer.setData('text/plain', player.id)}
                       >
-                        {player.name} {isPlaced ? '(geplaatst)' : ''}
+                        {player.name} {isPlaced ? '(geplaatst)' : ''} {isCaptain ? '(Aanvoerder)' : ''}
                       </button>
                     </li>
                   )
@@ -211,11 +241,15 @@ export default function App() {
                     .filter((position) => position.group === group)
                     .map((position) => {
                       const player = players.find((candidate) => candidate.id === placements[position.id])
+                      const isCaptain = player?.id === captainId
+                      const className = ['position-slot', player ? 'occupied' : '', isCaptain ? 'captain' : '']
+                        .filter(Boolean)
+                        .join(' ')
                       return (
                         <button
                           type="button"
-                          className={player ? 'position-slot occupied' : 'position-slot'}
-                          aria-label={`${position.label}${player ? `: ${player.name}` : ': vrij'}`}
+                          className={className}
+                          aria-label={`${position.label}${player ? `: ${player.name}${isCaptain ? ' (Aanvoerder)' : ''}` : ': vrij'}`}
                           key={position.id}
                           onClick={() => {
                             if (selectedStarterId) {
