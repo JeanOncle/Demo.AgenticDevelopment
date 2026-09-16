@@ -27,10 +27,10 @@ describe('App', () => {
     render(<App />)
 
     await user.click(screen.getAllByRole('button', { name: 'Basis' })[0])
-    await user.click(screen.getByRole('button', { name: /Milan de Boer/ }))
+    await user.click(screen.getByRole('button', { name: /Niek/ }))
     await user.click(screen.getByRole('button', { name: /Doelman: vrij/ }))
 
-    expect(screen.getByRole('button', { name: /Doelman: Milan de Boer/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Doelman: Niek/ })).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: '4-3-3' }))
     expect(screen.getByRole('alert')).toHaveTextContent('formatie is gewijzigd')
