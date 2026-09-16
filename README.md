@@ -6,6 +6,13 @@
 5. Someone should review the ticket and change the status to `Ready for development`
 6. The engineering agents changes the status to `In progress` starts his work and if done changes the status to `Ready for review`
 
+# Start
+1. Run `claude "/loop 1m /refine-functional"` for the product owner to start
+2. Run `claude "/loop 1m /refine-technical"` for the software architect to start
+
+# Demo
+[https://demo-agentic-development-n6o8hvkjs-jeanoncle.vercel.app/](Opstelling maken)
+
 # Prompts
 ## Product owner
 Could you create a new agent and relevant skills: I want this to be a dedicated product owner agent. It never edits code directly. It plans, parses requirements and breaks down tasks. It should use JIRA (and thus use the Atlassian MCP) and should create tickets in Dutch (but it shouldn't translate technical terms into Dutch). It should also check in JIRA for similar tickets or related functional requirements. If a ticket has been created, it should get the label "agentic" and assign the ticket to Jan Ooms for review.
