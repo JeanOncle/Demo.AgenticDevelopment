@@ -23,3 +23,22 @@ test('a manager can place starters on a selected formation', async ({ page }) =>
   await page.getByRole('button', { name: '4-3-3' }).click()
   await expect(page.getByText('1 nog niet geplaatst')).toBeVisible()
 })
+
+test('a manager can assign and reassign a single captain among the starters', async ({ page }) => {
+  await page.goto('/')
+
+  for (let index = 0; index < 11; index += 1) {
+    await page.getByRole('button', { name: 'Basis' }).first().click()
+  }
+
+  const captainButtons = page.getByRole('button', { name: 'Aanvoerder' })
+  await expect(captainButtons).toHaveCount(11)
+
+  await captainButtons.nth(0).click()
+  await expect(captainButtons.nth(0)).toHaveAttribute('aria-pressed', 'true')
+
+  await captainButtons.nth(1).click()
+  await expect(captainButtons.nth(1)).toHaveAttribute('aria-pressed', 'true')
+  await expect(captainButtons.nth(0)).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.locator('[aria-pressed="true"]', { hasText: 'Aanvoerder' })).toHaveCount(1)
+})
