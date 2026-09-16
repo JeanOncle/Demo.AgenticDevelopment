@@ -50,5 +50,5 @@ If any branch, validation, commit, push, pull-request, or status-transition acti
 |---|---|
 | Adding an ADR yourself because delivery is urgent | Only the software architect creates the design; comment and stop. |
 | Treating a test-passing local commit as review-ready | Push and create the PR first. |
-| Implementing a “better” architecture | Follow the approved architecture; propose a follow-up ticket if needed. |
+| Implementing a "better" architecture | Follow the approved architecture; propose a follow-up ticket if needed. |
 | Folding unrelated working-tree changes into the feature | Leave them untouched and work only on the ticket scope. |
