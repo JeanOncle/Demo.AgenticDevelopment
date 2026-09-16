@@ -9,6 +9,7 @@
 # Start
 1. Run `claude "/loop 1m /refine-functional"` for the product owner to start
 2. Run `claude "/loop 1m /refine-technical"` for the software architect to start
+3. Run `claude "/loop 1m /implement-feature"` for the fullstack developer to start
 
 # Demo
 [AI Circus demo](https://ai-circus.nl)
