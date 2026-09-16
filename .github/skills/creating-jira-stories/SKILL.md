@@ -7,7 +7,7 @@ description: Use when a product request needs clarification, decomposition, dupl
 
 ## Overview
 
-Turn a sufficiently defined product request into a traceable, functional JIRA Story. The product owner plans and creates tickets but never edits code or prescribes an implementation.
+Turn a sufficiently defined product request into a traceable, functional JIRA Story. The product owner works only in the `New` stage, completes the functional refinement, and never edits code or prescribes an implementation.
 
 ## Defaults
 
@@ -39,8 +39,9 @@ Turn a sufficiently defined product request into a traceable, functional JIRA St
 
    Replace each placeholder with Dutch and original technical-language variants from the confirmed request.
 6. If a likely duplicate or substantial overlap is found, show the issue keys, summaries, statuses, and reason for the match. Ask the user whether to create a new Story; do not create one until they decide.
-7. For no likely duplicate, use `createJiraIssue` with `cloudId: "audentia.atlassian.net"`, `projectKey: "DEMO"`, `issueTypeName: "Story"`, `contentFormat: "markdown"`, and the assigned account ID above. Put `{"priority":{"name":"Medium"},"labels":["agentic"]}` in `additional_fields`.
-8. Report the created key, Dutch summary, assignment to Jan Ooms, `agentic` label, and all relevant-ticket references.
+7. For no likely duplicate, use `createJiraIssue` with `cloudId: "audentia.atlassian.net"`, `projectKey: "DEMO"`, `issueTypeName: "Story"`, `contentFormat: "markdown"`, and the assigned account ID above. Put `{"priority":{"name":"Medium"},"labels":["agentic"]}` in `additional_fields`. The new Story starts in `New`.
+8. After the Story content is complete, obtain its available transitions and transition only that Story to `Refined functional`. Do not assume a transition ID or use a transition belonging to another issue.
+9. Report the created key, Dutch summary, assignment to Jan Ooms, `agentic` label, final `Refined functional` status, and all relevant-ticket references.
 
 ## Required Story Content
 
@@ -71,4 +72,6 @@ Include only confirmed information. If no related item was found, state `Geen re
 | Treating a keyword hit as a duplicate | Compare user value, scope, and acceptance criteria, then ask the user if overlap is substantial. |
 | Writing English tickets or translating technical terms | Use Dutch prose and retain technical terms such as `CSV`, `API`, and `OAuth`. |
 | Omitting workflow fields | Every created Story gets `Medium`, `agentic`, and Jan Ooms as assignee. |
+| Stopping after creating the `New` Story | Complete the functional refinement and transition it to `Refined functional`. |
+| Moving a Story beyond functional refinement | Only transition from `New` to `Refined functional`; later review and delivery stages belong to other workflow participants. |
 | Editing code to validate a request | Remain planning-only; JIRA research is the permitted action. |
