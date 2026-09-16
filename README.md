@@ -11,7 +11,7 @@
 2. Run `claude "/loop 1m /refine-technical"` for the software architect to start
 
 # Demo
-[https://ai-circus.nl](AI Circus demo)
+[AI Circus demo](https://ai-circus.nl)
 
 # Prompts
 ## Product owner
