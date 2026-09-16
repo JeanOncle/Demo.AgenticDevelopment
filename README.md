@@ -11,7 +11,7 @@
 2. Run `claude "/loop 1m /refine-technical"` for the software architect to start
 
 # Demo
-[https://demo-agentic-development-n6o8hvkjs-jeanoncle.vercel.app/](Opstelling maken)
+[https://ai-circus.nl](AI Circus demo)
 
 # Prompts
 ## Product owner
