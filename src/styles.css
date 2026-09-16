@@ -1,0 +1,88 @@
+:root {
+  color: #172419;
+  background: #eef2e9;
+  font-family: Georgia, "Times New Roman", serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --ink: #172419;
+  --muted: #526153;
+  --paper: #fbfcf8;
+  --field: #dce8d7;
+  --line: #bdcdb9;
+  --forest: #1e5b3a;
+  --forest-dark: #123d27;
+  --danger: #9d311c;
+  --radius: 0.5rem;
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-inline-size: 20rem; }
+button { font: inherit; }
+button:focus-visible { outline: 0.2rem solid #e48730; outline-offset: 0.2rem; }
+button:disabled { cursor: not-allowed; opacity: 0.55; }
+
+.app-shell { margin-inline: auto; max-inline-size: 72rem; padding: clamp(1.5rem, 5vw, 4rem); }
+.page-header { border-block-end: 0.2rem solid var(--ink); margin-block-end: var(--space-3); max-inline-size: 46rem; }
+.page-header h1 { font-size: clamp(2.5rem, 8vw, 5.5rem); letter-spacing: -0.06em; line-height: 0.9; margin: 0 0 var(--space-2); }
+.page-header > p:last-child { color: var(--muted); font-size: 1.1rem; line-height: 1.5; }
+.eyebrow { color: var(--forest); font-family: Arial, sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; margin: 0 0 var(--space-1); text-transform: uppercase; }
+
+.selection-summary { display: grid; gap: 1px; grid-template-columns: repeat(3, 1fr); background: var(--line); border: 1px solid var(--line); margin-block-end: var(--space-3); }
+.selection-summary > div { background: var(--paper); padding: var(--space-2); }
+.selection-summary span { color: var(--muted); display: block; font-family: Arial, sans-serif; font-size: 0.8rem; }
+.selection-summary strong { font-size: clamp(1.4rem, 4vw, 2rem); }
+.message { background: #fff0e9; border-inline-start: 0.3rem solid var(--danger); color: #681f12; margin-block: var(--space-2); padding: var(--space-2); }
+
+.section-heading { align-items: end; display: flex; justify-content: space-between; margin-block: var(--space-3) var(--space-1); }
+.section-heading h2, .confirmation h2 { font-size: 1.75rem; margin: 0; }
+.section-heading > p { color: var(--muted); font-family: Arial, sans-serif; font-size: 0.875rem; margin: 0; }
+.player-list { border-block-start: 1px solid var(--line); list-style: none; margin: 0; padding: 0; }
+.player-row { align-items: center; border-block-end: 1px solid var(--line); display: flex; gap: var(--space-2); justify-content: space-between; padding-block: var(--space-2); }
+.player-row strong, .player-row span { display: block; }
+.player-row span { color: var(--muted); font-family: Arial, sans-serif; font-size: 0.8rem; margin-block-start: 0.2rem; }
+.player-actions { display: flex; gap: var(--space-1); }
+.player-actions button, .confirmation button, .error-page button { background: var(--forest); border: 1px solid var(--forest); border-radius: var(--radius); color: white; cursor: pointer; padding: 0.6rem 0.85rem; }
+.player-actions .secondary { background: transparent; color: var(--forest-dark); }
+.player-actions .remove { background: transparent; border-color: var(--danger); color: var(--danger); }
+.formation-section { margin-block-start: var(--space-4); }
+.formation-picker { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-block-end: var(--space-2); }
+.formation-choice { background: transparent; border: 1px solid var(--forest); border-radius: 100vw; color: var(--forest-dark); cursor: pointer; padding: 0.5rem 0.9rem; }
+.formation-choice.active { background: var(--forest); color: #fff; }
+.pitch-layout { display: grid; gap: var(--space-2); grid-template-columns: minmax(12rem, 0.55fr) minmax(0, 1.45fr); }
+.starter-bank { background: var(--paper); border: 1px solid var(--line); padding: var(--space-2); }
+.starter-bank h3 { margin-block: 0 var(--space-1); }
+.starter-bank p { color: var(--muted); font-family: Arial, sans-serif; font-size: 0.85rem; line-height: 1.4; }
+.starter-bank ul { display: grid; gap: 0.4rem; list-style: none; margin: 0; padding: 0; }
+.starter-chip { background: transparent; border: 1px solid var(--line); border-radius: var(--radius); color: var(--ink); cursor: grab; inline-size: 100%; padding: 0.5rem; text-align: start; }
+.starter-chip.selected { background: var(--forest-dark); border-color: var(--forest-dark); color: #fff; }
+.pitch { background-color: #367b48; background-image: linear-gradient(90deg, transparent 49.7%, rgba(255, 255, 255, 0.7) 49.7%, rgba(255, 255, 255, 0.7) 50.3%, transparent 50.3%); border: 0.35rem solid #f7fbec; box-shadow: inset 0 0 0 1px rgba(18, 61, 39, 0.75); display: grid; grid-template-rows: repeat(4, 1fr); min-block-size: 34rem; padding: var(--space-2); }
+.position-row { align-items: center; display: grid; gap: var(--space-1); grid-template-columns: repeat(var(--players-in-row), 1fr); }
+.position-row.goalkeeper { --players-in-row: 1; }
+.position-row.defence { --players-in-row: 4; }
+.position-row.midfield { --players-in-row: 5; }
+.position-row.attack { --players-in-row: 3; }
+.position-slot { background: #fbfcf8; border: 2px dashed var(--forest-dark); border-radius: 50%; color: var(--ink); cursor: pointer; justify-self: center; min-block-size: 5rem; padding: 0.35rem; text-align: center; inline-size: min(100%, 7.5rem); }
+.position-slot.occupied { background: #e9b86e; border-style: solid; }
+.position-slot span, .position-slot strong { display: block; font-family: Arial, sans-serif; font-size: 0.7rem; line-height: 1.2; }
+.position-slot strong { font-size: 0.8rem; margin-block-start: 0.25rem; }
+.empty-state { background: var(--paper); border: 1px dashed var(--line); color: var(--muted); padding: var(--space-2); }
+.confirmation { background: var(--field); border: 1px solid var(--line); margin-block-start: var(--space-4); padding: var(--space-3); }
+.confirmation p { line-height: 1.5; }
+.sr-only { block-size: 1px; clip: rect(0, 0, 0, 0); inline-size: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; white-space: nowrap; }
+.error-page { margin: 4rem auto; max-inline-size: 40rem; padding: var(--space-3); }
+
+@media (max-width: 38rem) {
+  .selection-summary { grid-template-columns: 1fr; }
+  .section-heading { align-items: start; flex-direction: column; gap: var(--space-1); }
+  .player-row { align-items: start; flex-direction: column; }
+  .pitch-layout { grid-template-columns: 1fr; }
+  .pitch { min-block-size: 28rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
