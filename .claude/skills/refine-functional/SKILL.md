@@ -23,7 +23,7 @@ Decide the mode first: if the invocation includes a described product request or
 Questions come before content, in both modes:
 
 1. Resolve every material gap first — via `AskUserQuestion` in the Manual Request Workflow, or via an answered comment thread in the Autonomous Ticket Sweep. Never guess or fill a gap with a plausible default.
-2. Only once nothing material is left unresolved, write the full **Required Story Content** template and transition the ticket to `Refined functional` — as a single combined final step, never separately or in advance. A ticket with any open question must stay in `New` with no functional-specification content written yet (a rough draft or the original request text in the description is fine; the template is not).
+2. Only once nothing material is left unresolved, write the full **Required Story Content** template, set the summary to match (see [Summary](#summary) below), and transition the ticket to `Refined functional` — as a single combined final step, never separately or in advance. A ticket with any open question must stay in `New` with no functional-specification content written yet (a rough draft or the original request text in the description is fine; the template is not).
 
 ## Defaults
 
@@ -46,9 +46,10 @@ Questions come before content, in both modes:
 4. When a request references existing, old, legacy, or comparable behavior, confirm the exact source and intended functional behavior before deriving scope or acceptance criteria. If it cannot be identified, ask whether to defer the ticket or record the unknown behavior as an explicit follow-up; never infer it.
 5. Before creating each Story, run the **Duplicate Search** procedure below.
 6. If a likely duplicate or substantial overlap is found, show the issue keys, summaries, statuses, and reason for the match. Ask the user whether to create a new Story; do not create one until they decide.
-7. For no likely duplicate, use `createJiraIssue` with `cloudId: "audentia.atlassian.net"`, `projectKey: "DEMO"`, `issueTypeName: "Story"`, `contentFormat: "markdown"`, and the assigned account ID above. Put `{"priority":{"name":"Medium"},"labels":["agentic"]}` in `additional_fields`. The new Story starts in `New`.
+7. For no likely duplicate, use `createJiraIssue` with `cloudId: "audentia.atlassian.net"`, `projectKey: "DEMO"`, `issueTypeName: "Story"`, `contentFormat: "markdown"`, `summary` set per [Summary](#summary) below, and the assigned account ID above. Put `{"priority":{"name":"Medium"},"labels":["agentic"]}` in `additional_fields`. The new Story starts in `New`.
 8. After the Story content is complete, obtain its available transitions and transition only that Story to `Refined functional`. Do not assume a transition ID or use a transition belonging to another issue.
 9. Report the created key, Dutch summary, assignment to Jan Ooms, `agentic` label, final `Refined functional` status, and all relevant-ticket references.
+10. If the request evolved during clarification (split, renamed, or reframed after the initial summary was set) and the ticket's summary no longer matches the confirmed capability, update the summary field to match before reporting.
 
 ## Autonomous Ticket Sweep
 
@@ -66,7 +67,7 @@ Runs unattended, so any material gap must be resolved by commenting on the ticke
    d. If a material gap remains (per the [Sequencing rule](#sequencing-rule)): post a new comment with the required marker (see below) asking exactly one focused question, phrased in Dutch like the rest of the ticket. Add the `needs-clarification` label if it is not already present. Do not touch the description and do not transition the status. Note the ticket as "asked" in the final report.
    e. If the ticket is now sufficiently specified: run the **Duplicate Search** procedure below.
       - If a likely duplicate is found, post a marked comment (see below) describing the match and asking the human to confirm whether to proceed or close as a duplicate — this is itself an open question, so per the Sequencing rule the description must not be rewritten yet. Add `needs-clarification` if not present, and note the ticket as "asked" (duplicate-check).
-      - If no likely duplicate, before rewriting, capture the ticket's current description verbatim — per the Sequencing rule it has not yet been touched, so it is still the original request text. Rewrite the description to match the **Required Story Content** template using only confirmed information from the original description and the comment thread, quoting that captured text in the **Original request** section, remove the `needs-clarification` label if present, obtain the ticket's transitions, and transition it to `Refined functional` in the same pass. Note the ticket as "refined".
+      - If no likely duplicate, before rewriting, capture the ticket's current description verbatim — per the Sequencing rule it has not yet been touched, so it is still the original request text. Rewrite the description to match the **Required Story Content** template using only confirmed information from the original description and the comment thread, quoting that captured text in the **Original request** section, update the summary field per [Summary](#summary) below, remove the `needs-clarification` label if present, obtain the ticket's transitions, and transition it to `Refined functional` in the same pass. Note the ticket as "refined".
 3. Report a short summary grouped by outcome: refined (keys + summaries), asked (keys + the question posted), and waiting (keys only, no action taken this run).
 
 ### Distinguishing my comments from human replies
@@ -92,6 +93,10 @@ project = DEMO AND text ~ "\"[functional outcome]\""
 ```
 
 Replace each placeholder with Dutch and original technical-language variants from the confirmed request. Exclude the ticket being refined from its own duplicate check.
+
+## Summary
+
+The JIRA `summary` (title) field is refined content, not metadata — keep it as accurate as the description. Write it in clear Dutch, retaining technical terms in their original form, as a concise statement of the capability and actor, e.g. `[Actor] kan [mogelijkheid]`. It must reflect the final confirmed scope: if clarification narrows, splits, or reframes the request after a summary was first drafted, update the summary to match before the ticket is treated as refined — never leave a stale, generic, or pre-clarification title on a `Refined functional` Story. When a request is split into multiple Stories, give each a distinct summary describing only that Story's scope, not the original combined request.
 
 ## Required Story Content
 
@@ -133,3 +138,4 @@ Include only confirmed information. If no related item was found, state `Geen re
 | Asking `AskUserQuestion` during an Autonomous Ticket Sweep | No human is present in that mode; ask by commenting on the ticket instead. |
 | Writing the Required Story Content template, or transitioning to `Refined functional`, while a question is still open | Both happen together, only once every material gap is resolved — see the Sequencing rule. |
 | Omitting or paraphrasing the **Original request** section | Capture the request verbatim before any rewriting and quote it unchanged, so the original ask stays traceable even after refinement. |
+| Rewriting the description but leaving a stale or generic summary/title | Update the summary field to match the confirmed scope in the same pass — see [Summary](#summary). |
