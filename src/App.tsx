@@ -1,4 +1,5 @@
 import { useMemo, useState, type CSSProperties, type DragEvent } from 'react'
+import { PlayerAvatar } from './assets/PlayerAvatar'
 import { players } from './data/players'
 import { clearCaptainIfRemoved, setCaptain } from './domain/captain'
 import {
@@ -266,6 +267,7 @@ export default function App() {
                           onDrop={(event) => handleDrop(event, position.id)}
                         >
                           <span>{position.label}</span>
+                          {player && <PlayerAvatar />}
                           <strong>{player?.name ?? 'Vrij'}</strong>
                         </button>
                       )

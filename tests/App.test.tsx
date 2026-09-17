@@ -67,6 +67,36 @@ describe('App', () => {
     ).toHaveLength(0)
   })
 
+  it('shows the shared decorative avatar only on occupied pitch positions, leaving other screens unchanged', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+
+    await user.click(screen.getAllByRole('button', { name: 'Basis' })[0])
+    await user.click(screen.getAllByRole('button', { name: 'Reserve' })[0])
+
+    expect(container.querySelectorAll('.position-slot-avatar')).toHaveLength(0)
+    expect(container.querySelector('.player-list .position-slot-avatar')).toBeNull()
+    expect(container.querySelector('.starter-bank .position-slot-avatar')).toBeNull()
+
+    await user.click(screen.getByRole('button', { name: /Niek/ }))
+    await user.click(screen.getByRole('button', { name: /Doelman: vrij/ }))
+
+    const occupiedSlot = container.querySelector('.position-slot.occupied')
+    expect(occupiedSlot).not.toBeNull()
+    const avatar = occupiedSlot?.querySelector('.position-slot-avatar')
+    expect(avatar).not.toBeNull()
+    expect(avatar).toHaveAttribute('aria-hidden', 'true')
+
+    const emptySlot = container.querySelector('.position-slot:not(.occupied)')
+    expect(emptySlot).not.toBeNull()
+    expect(emptySlot?.querySelector('.position-slot-avatar')).toBeNull()
+
+    // Player list, captain selection, and the starter bank stay unchanged.
+    expect(container.querySelector('.player-list .position-slot-avatar')).toBeNull()
+    expect(container.querySelector('.starter-bank .position-slot-avatar')).toBeNull()
+    expect(container.querySelector('.player-actions .position-slot-avatar')).toBeNull()
+  })
+
   it.each(formations.map((formation) => formation.id))(
     'aligns every position line in the %s formation with the exact number of positions in that line',
     async (formationId: FormationId) => {

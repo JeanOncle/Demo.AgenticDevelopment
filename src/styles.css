@@ -79,6 +79,8 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
 .position-slot.captain strong { color: var(--danger); }
 .position-slot span, .position-slot strong { display: block; font-family: Arial, sans-serif; font-size: 0.7rem; line-height: 1.2; }
 .position-slot strong { font-size: 0.8rem; margin-block-start: 0.25rem; }
+.position-slot-avatar { block-size: 1.6rem; color: var(--forest-dark); display: block; inline-size: 1.6rem; margin-block: 0.2rem; margin-inline: auto; }
+.position-slot.captain .position-slot-avatar { color: var(--danger); }
 .empty-state { background: var(--paper); border: 1px dashed var(--line); color: var(--muted); padding: var(--space-2); }
 .confirmation { background: var(--field); border: 1px solid var(--line); margin-block-start: var(--space-4); padding: var(--space-3); }
 .confirmation p { line-height: 1.5; }
