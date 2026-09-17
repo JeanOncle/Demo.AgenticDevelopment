@@ -109,7 +109,8 @@ style: |
 ---
 
 # Vervolgstappen
-- Verschillende agents
+- Agents uitsplitsen
+- Model per agent
 
 ---
 

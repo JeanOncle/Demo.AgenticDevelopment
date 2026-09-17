@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(test:*)",
-      "WebFetch(domain:code.claude.com)"
+      "WebFetch(domain:code.claude.com)",
+      "mcp__atlassian",
+      "mcp__github"
     ],
     "deny": [],
     "ask": []

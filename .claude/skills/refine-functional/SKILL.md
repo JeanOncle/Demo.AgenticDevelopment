@@ -1,6 +1,6 @@
 ---
 name: refine-functional
-description: Use when a product request needs clarification, decomposition, duplicate analysis, or a JIRA Story in the DEMO project. Also runs an autonomous sweep of recently created DEMO tickets when invoked with no specific request (e.g. from a scheduled loop).
+description: Use when a product request needs clarification, decomposition, duplicate analysis, or a JIRA Story in the DEMO project. Also runs an autonomous sweep of untouched DEMO tickets in New status when invoked with no specific request (e.g. from a scheduled loop).
 context: fork
 agent: product-owner
 ---
@@ -14,7 +14,7 @@ Turn a sufficiently defined product request into a traceable, functional JIRA St
 This skill runs in one of two modes:
 
 - **Manual Request Workflow** — a human describes a request directly in the conversation. Use `AskUserQuestion` to resolve gaps interactively.
-- **Autonomous Ticket Sweep** — invoked with no specific request (including scheduled/`/loop` invocations). It finds recently created DEMO tickets itself and resolves gaps by commenting on the ticket, since no human is present in the conversation to ask.
+- **Autonomous Ticket Sweep** — invoked with no specific request (including scheduled/`/loop` invocations). It finds every DEMO ticket in `New` status that it has not already touched and resolves gaps by commenting on the ticket, since no human is present in the conversation to ask.
 
 Decide the mode first: if the invocation includes a described product request or names an existing Story to refine, use the Manual Request Workflow. If it does not (empty or generic invocation, e.g. a bare `/refine-functional`), use the Autonomous Ticket Sweep.
 
@@ -53,16 +53,15 @@ Questions come before content, in both modes:
 
 ## Autonomous Ticket Sweep
 
-Runs unattended, so any material gap must be resolved by commenting on the ticket and waiting for a human reply on a later invocation — never invent an answer, and never wait synchronously within a single run. This mode assumes it is invoked at least as often as the candidate window below (e.g. `/loop 5m /refine-functional`); a sparser cadence means a ticket could be missed by the `created >= -30m` search before it also gets picked up via the `needs-clarification` label search.
+Runs unattended, so any material gap must be resolved by commenting on the ticket and waiting for a human reply on a later invocation — never invent an answer, and never wait synchronously within a single run. Every ticket currently in `New` is a candidate on every run, however old — there is no time window. A ticket already in progress is recognized and skipped (not reworked) purely from the evidence left on it by a prior pass: the `needs-clarification` label and this skill's own marker comments (see step 2b and [Distinguishing my comments from human replies](#distinguishing-my-comments-from-human-replies)). Once a ticket is fully refined it transitions out of `New` and drops out of the candidate search on its own, so it can never be picked up a second time.
 
-1. Gather candidates with two JQL searches against `cloudId: "audentia.atlassian.net"`, requesting fields `["summary","description","status","labels","comment"]`:
-   - New: `project = DEMO AND issuetype = Story AND status = "New" AND created >=  30m ORDER BY created ASC`
-   - Awaiting reply: `project = DEMO AND issuetype = Story AND status = "New" AND labels = "needs-clarification" ORDER BY updated ASC`
+1. Gather every candidate with one JQL search against `cloudId: "audentia.atlassian.net"`, requesting fields `["summary","description","status","labels","comment"]`:
+   - `project = DEMO AND issuetype = Story AND status = "New" ORDER BY created ASC`
 
-   Merge the results and de-duplicate by issue key. If both searches return nothing, report that no tickets needed attention and stop.
+   If it returns nothing, report that no tickets needed attention and stop.
 2. For each candidate, in order:
    a. Read its `comment.comments` list and classify each comment as **mine** (body starts with the marker defined in [Distinguishing my comments from human replies](#distinguishing-my-comments-from-human-replies) below) or **human** (anything else, regardless of author).
-   b. If the most recent comment is mine and no human comment follows it, the ticket is still waiting on a reply — skip it, and note it as "waiting" in the final report.
+   b. If the most recent comment is mine and no human comment follows it, the ticket is still waiting on a reply — skip it, and note it as "waiting" in the final report. This check, together with the `needs-clarification` label, is what keeps an already-asked ticket from being asked again or re-refined on a later run — never skip it and never re-post a question a marked comment already covers.
    c. Otherwise, re-run the sufficiency check from Manual Request Workflow step 2 using the description plus the full comment thread (a human reply answers the most recent question mine).
    d. If a material gap remains (per the [Sequencing rule](#sequencing-rule)): post a new comment with the required marker (see below) asking exactly one focused question, phrased in Dutch like the rest of the ticket. Add the `needs-clarification` label if it is not already present. Do not touch the description and do not transition the status. Note the ticket as "asked" in the final report.
    e. If the ticket is now sufficiently specified: run the **Duplicate Search** procedure below.
@@ -139,3 +138,4 @@ Include only confirmed information. If no related item was found, state `Geen re
 | Writing the Required Story Content template, or transitioning to `Refined functional`, while a question is still open | Both happen together, only once every material gap is resolved — see the Sequencing rule. |
 | Omitting or paraphrasing the **Original request** section | Capture the request verbatim before any rewriting and quote it unchanged, so the original ask stays traceable even after refinement. |
 | Rewriting the description but leaving a stale or generic summary/title | Update the summary field to match the confirmed scope in the same pass — see [Summary](#summary). |
+| Limiting the sweep to recently created tickets, or re-processing a ticket with no new evidence of a reply | Every `New` ticket is a candidate regardless of age; a ticket is only skipped once, and only via the marker-comment/`needs-clarification` check in step 2b — never by ticket age. |
