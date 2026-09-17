@@ -1,0 +1,39 @@
+@startuml
+left to right direction
+
+skinparam backgroundColor transparent
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam defaultFontColor #F1F5F9
+skinparam rectangle {
+  RoundCorner 12
+  BorderColor #49A7CA
+  FontColor #F1F5F9
+}
+skinparam hexagon {
+  BorderColor #11C38B
+  BackgroundColor #173B45
+  FontColor #F1F5F9
+}
+skinparam note {
+  BackgroundColor #243A4A
+  BorderColor #49A7CA
+  FontColor #F1F5F9
+}
+skinparam ArrowColor #11C38B
+skinparam ArrowFontColor #F1F5F9
+
+rectangle "Nieuw verzoek\nJIRA: New" as request #173B45
+rectangle "Product owner agent\n/refine-functional" as productOwner #0D4660
+rectangle "Functioneel verfijnd\nJIRA: Refined functional" as functionalRefined #173B45
+rectangle "Handmatige review\nZet status naar Ready for technical refinement" as functionalReview #173B45
+
+request -right-> productOwner
+productOwner -down-> functionalRefined : geen open vragen
+functionalRefined -left-> functionalReview
+
+note bottom of productOwner
+  Open vraag?
+  Vraag en antwoord in JIRA
+end note
+@enduml

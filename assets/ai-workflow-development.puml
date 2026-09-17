@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+
+skinparam backgroundColor transparent
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam defaultFontColor #F1F5F9
+skinparam rectangle {
+  RoundCorner 12
+  BorderColor #49A7CA
+  FontColor #F1F5F9
+}
+skinparam note {
+  BackgroundColor #243A4A
+  BorderColor #49A7CA
+  FontColor #F1F5F9
+}
+skinparam ArrowColor #11C38B
+skinparam ArrowFontColor #F1F5F9
+
+rectangle "JIRA: Ready for\ndevelopment" as developmentReady #173B45
+rectangle "Full-stack developer agent\n/implement-feature" as developer #0D4660
+rectangle "JIRA: In progress" as inProgress #173B45
+rectangle "Code, tests, branch,\ncommit, push en pull request" as delivery #173B45
+rectangle "JIRA: Ready for review" as readyForReview #173B45
+
+developmentReady -right-> developer : In progress
+developer -right-> inProgress
+inProgress -down-> delivery
+delivery -right-> readyForReview
+
+note bottom of developer
+  Ontwerp ontbreekt of is strijdig?
+  Stop en rapporteer in JIRA
+end note
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+left to right direction
+
+skinparam backgroundColor transparent
+skinparam shadowing false
+skinparam defaultFontName Segoe UI
+skinparam defaultFontColor #F1F5F9
+skinparam rectangle {
+  RoundCorner 12
+  BorderColor #49A7CA
+  FontColor #F1F5F9
+}
+skinparam note {
+  BackgroundColor #243A4A
+  BorderColor #49A7CA
+  FontColor #F1F5F9
+}
+skinparam ArrowColor #11C38B
+skinparam ArrowFontColor #F1F5F9
+
+rectangle "JIRA: Ready for\ntechnical refinement" as technicalReady #173B45
+rectangle "Software architect agent\n/refine-technical" as architect #0D4660
+rectangle "Technisch ontwerp en ADR\nJIRA: Refined technical" as technicalRefined #173B45
+rectangle "Handmatige review\nZet status naar Ready for development" as technicalReview #173B45
+
+technicalReady -right-> architect
+architect -down-> technicalRefined : ontwerp en ADR gereed
+technicalRefined -left-> technicalReview
+
+note bottom of architect
+  Open technische vraag?
+  Vraag en antwoord in JIRA
+end note
+@enduml

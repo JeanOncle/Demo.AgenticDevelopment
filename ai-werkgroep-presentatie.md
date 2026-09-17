@@ -95,25 +95,95 @@ style: |
 
 ---
 
+# Vakjargon
+- Claude
+- Copilot
+- Skills
+- Agents
+
+---
+
+# Afkortingen
+
+- AGI: Artifical General Intelligence
+- ASI: Artifical Super Intelligence
+- LLM: Large Language Model
+- GPT: Generative Pre-trained Transformer
+- MCP: Model Context Protocol
+- ADR: Architectural Decision Record
+
+---
+
 # AI Circus
 
 - https://ai-circus.nl
-- Feature requests
+
 
 <img src="assets/qr-ai-circus.png" class="qr-code" alt="QR-code naar ai-circus.nl" />
 
 ---
 
-# Workflow
+# Workflow: functionele verfijning
+
+![w:1100](assets/ai-workflow.svg)
+
+---
+
+# Workflow: technische verfijning
+
+![w:1100](assets/ai-workflow-technical.svg)
+
+---
+
+# Workflow: implementatie
+
+![h:480](assets/ai-workflow-development.svg)
+
+---
+
+# Demo
+
+- Feature requests via Teams
 
 ---
 
 # Vervolgstappen
 - Agents uitsplitsen
 - Model per agent
+- Bugs vs. Features
+- Menselijk ingrijpen?
+- Interactie gap
+
+---
+
+# Blessures en schorsingen
+
+- Handmatige klus
+- Skill
+- Handmatig aftrappen
+- Handmatig doorvoeren
 
 ---
 
 # Obsidian
 
-- Wiki
+- 2e brein
+- Lokale Wiki
+
+---
+
+# Overpeinzingen
+
+- LinkedIn / de echte wereld
+- Amerika (OpenAI, Claude, etc)? China (Qwen, Deepseek)? Europa (Mistral, Lumo)?
+- Auteursrechten?
+- Hermes, pi.dev, n8n, Orca ADE?
+- Kosten
+- Zorgen binnen mijn team
+- ![h:180](assets/our-final-invention.jpg)
+
+---
+
+# Ter afsluiting
+
+[Stephen Fry en Griekse mythologie](https://www.youtube.com/watch?v=c0Ody-HLvTk)
