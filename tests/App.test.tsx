@@ -1,8 +1,22 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import App from '../src/App'
 import { formations, getFormation, type FormationId } from '../src/domain/formation'
+
+// Finds the `.player-row` for a given player name, so gesp/captain
+// assertions can be scoped to one specific, known-eligible player instead of
+// relying on list position (unlike the generic "first Basis button" helpers
+// used elsewhere in this file, which don't need a specific player).
+const getPlayerRow = (container: HTMLElement, name: string): HTMLElement => {
+  const row = Array.from(container.querySelectorAll<HTMLElement>('.player-row')).find((candidate) =>
+    candidate.querySelector('div > strong')?.textContent?.trim().startsWith(name),
+  )
+  if (!row) {
+    throw new Error(`No player row found for "${name}"`)
+  }
+  return row
+}
 
 describe('App', () => {
   it('shows selection counts, surfaces rule errors, and blocks confirmation until complete', async () => {
@@ -65,6 +79,63 @@ describe('App', () => {
         .getAllByRole('button', { name: 'Aanvoerder' })
         .filter((button) => button.getAttribute('aria-pressed') === 'true'),
     ).toHaveLength(0)
+  })
+
+  it('only offers the gesp button to basis players with a 3-letter first name, moves the marking to a newly chosen eligible holder, and clears it on removal', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+
+    // Jan and Rik are the roster's only 3-letter first names; Niek and Eric are not.
+    await user.click(within(getPlayerRow(container, 'Jan')).getByRole('button', { name: 'Basis' }))
+    await user.click(within(getPlayerRow(container, 'Rik')).getByRole('button', { name: 'Basis' }))
+    await user.click(within(getPlayerRow(container, 'Niek')).getByRole('button', { name: 'Basis' }))
+    await user.click(within(getPlayerRow(container, 'Eric')).getByRole('button', { name: 'Basis' }))
+
+    expect(within(getPlayerRow(container, 'Jan')).queryByRole('button', { name: 'Gesp' })).not.toBeNull()
+    expect(within(getPlayerRow(container, 'Rik')).queryByRole('button', { name: 'Gesp' })).not.toBeNull()
+    expect(within(getPlayerRow(container, 'Niek')).queryByRole('button', { name: 'Gesp' })).toBeNull()
+    expect(within(getPlayerRow(container, 'Eric')).queryByRole('button', { name: 'Gesp' })).toBeNull()
+
+    const janGespButton = () => within(getPlayerRow(container, 'Jan')).getByRole('button', { name: 'Gesp' })
+    const rikGespButton = () => within(getPlayerRow(container, 'Rik')).getByRole('button', { name: 'Gesp' })
+
+    await user.click(janGespButton())
+    expect(janGespButton()).toHaveAttribute('aria-pressed', 'true')
+    expect(container.querySelectorAll('.gesp-toggle.active')).toHaveLength(1)
+
+    await user.click(rikGespButton())
+    expect(janGespButton()).toHaveAttribute('aria-pressed', 'false')
+    expect(rikGespButton()).toHaveAttribute('aria-pressed', 'true')
+    expect(container.querySelectorAll('.gesp-toggle.active')).toHaveLength(1)
+
+    await user.click(within(getPlayerRow(container, 'Rik')).getByRole('button', { name: 'Verwijder' }))
+    expect(
+      screen
+        .getAllByRole('button', { name: 'Gesp' })
+        .filter((button) => button.getAttribute('aria-pressed') === 'true'),
+    ).toHaveLength(0)
+  })
+
+  it('shows the glinstering gesp icon only on the pitch position of the current gesp holder', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<App />)
+
+    await user.click(within(getPlayerRow(container, 'Jan')).getByRole('button', { name: 'Basis' }))
+    await user.click(within(getPlayerRow(container, 'Rik')).getByRole('button', { name: 'Basis' }))
+    await user.click(within(getPlayerRow(container, 'Rik')).getByRole('button', { name: 'Gesp' }))
+
+    expect(container.querySelectorAll('.gesp-icon')).toHaveLength(0)
+
+    await user.click(screen.getByRole('button', { name: /^Rik/ }))
+    await user.click(screen.getByRole('button', { name: /Doelman: vrij/ }))
+
+    const gespSlot = container.querySelector('.position-slot.gesp')
+    expect(gespSlot).not.toBeNull()
+    expect(gespSlot?.querySelector('.gesp-icon')).not.toBeNull()
+    expect(container.querySelectorAll('.gesp-icon')).toHaveLength(1)
+
+    await user.click(within(getPlayerRow(container, 'Rik')).getByRole('button', { name: 'Verwijder' }))
+    expect(container.querySelectorAll('.gesp-icon')).toHaveLength(0)
   })
 
   it('shows the shared decorative avatar only on occupied pitch positions, leaving other screens unchanged', async () => {
