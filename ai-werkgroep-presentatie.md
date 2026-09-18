@@ -100,6 +100,8 @@ style: |
 - Copilot
 - Skills
 - Agents
+- Models
+- Tokens
 
 ---
 
@@ -143,7 +145,7 @@ style: |
 
 # Demo
 
-- Feature requests via Teams
+- Feature requests via Teams `#feature`
 
 ---
 
@@ -156,12 +158,13 @@ style: |
 
 ---
 
-# Blessures en schorsingen
+# Overig
 
-- Handmatige klus
-- Skill
-- Handmatig aftrappen
-- Handmatig doorvoeren
+- Blessures & Schorsingen
+- Pagerduty Triage
+- Giannify
+- Renovate
+- Boilerplate code
 
 ---
 
@@ -177,6 +180,7 @@ style: |
 - LinkedIn / de echte wereld
 - Amerika (OpenAI, Claude, etc)? China (Qwen, Deepseek)? Europa (Mistral, Lumo)?
 - Auteursrechten?
+- Hugging Face en andere incidenten
 - Hermes, pi.dev, n8n, Orca ADE?
 - Kosten
 - Zorgen binnen mijn team
