@@ -1,7 +1,9 @@
 import { useMemo, useState, type CSSProperties, type DragEvent } from 'react'
+import { GespIcon } from './assets/GespIcon'
 import { PlayerAvatar } from './assets/PlayerAvatar'
 import { players } from './data/players'
 import { clearCaptainIfRemoved, setCaptain } from './domain/captain'
+import { clearGespHolderIfRemoved, isGespEligible, setGespHolder } from './domain/gesp'
 import {
   formations,
   getFormation,
@@ -30,6 +32,7 @@ export default function App() {
   const [placements, setPlacements] = useState<Placements>({})
   const [selectedStarterId, setSelectedStarterId] = useState<string>()
   const [captainId, setCaptainId] = useState<string>()
+  const [gespHolderId, setGespHolderId] = useState<string>()
   const isValid = isValidSelection(selection)
   const selectedCount = selection.starters.length + selection.substitutes.length
   const formation = getFormation(formationId)
@@ -52,6 +55,7 @@ export default function App() {
     setSelection((current) => removePlayer(current, playerId))
     setPlacements((current) => removePlayerPlacements(current, playerId))
     setCaptainId((current) => clearCaptainIfRemoved(current, playerId))
+    setGespHolderId((current) => clearGespHolderIfRemoved(current, playerId))
     if (selectedStarterId === playerId) {
       setSelectedStarterId(undefined)
     }
@@ -63,6 +67,14 @@ export default function App() {
     setMessage(result.error)
     if (!result.error) {
       setCaptainId(result.captainId)
+    }
+  }
+
+  const assignGesp = (playerId: string): void => {
+    const result = setGespHolder(selection, playerId, players)
+    setMessage(result.error)
+    if (!result.error) {
+      setGespHolderId(result.gespHolderId)
     }
   }
 
@@ -137,11 +149,13 @@ export default function App() {
           {players.map((player) => {
             const status = playerStatuses.get(player.id)
             const isCaptain = player.id === captainId
+            const isGesp = player.id === gespHolderId
+            const nameClassName = [isCaptain ? 'captain' : '', isGesp ? 'gesp' : ''].filter(Boolean).join(' ')
             return (
               <li className="player-row" key={player.id}>
                 <div>
-                  <strong className={isCaptain ? 'captain' : undefined}>
-                    {player.name} {isCaptain ? '(Aanvoerder)' : ''}
+                  <strong className={nameClassName || undefined}>
+                    {player.name} {isCaptain ? '(Aanvoerder)' : ''} {isGesp ? '(Gesp)' : ''}
                   </strong>
                   <span aria-live="polite">{status ?? 'Niet geselecteerd'}</span>
                 </div>
@@ -165,6 +179,16 @@ export default function App() {
                           onClick={() => assignCaptain(player.id)}
                         >
                           Aanvoerder
+                        </button>
+                      )}
+                      {status === 'Basis' && isGespEligible(player) && (
+                        <button
+                          type="button"
+                          className={player.id === gespHolderId ? 'gesp-toggle active' : 'gesp-toggle'}
+                          aria-pressed={player.id === gespHolderId}
+                          onClick={() => assignGesp(player.id)}
+                        >
+                          Gesp
                         </button>
                       )}
                       <button type="button" className="remove" onClick={() => remove(player.id)}>
@@ -214,7 +238,13 @@ export default function App() {
                   const isSelected = player.id === selectedStarterId
                   const isPlaced = !unplacedStarters.includes(player.id)
                   const isCaptain = player.id === captainId
-                  const className = ['starter-chip', isSelected ? 'selected' : '', isCaptain ? 'captain' : '']
+                  const isGesp = player.id === gespHolderId
+                  const className = [
+                    'starter-chip',
+                    isSelected ? 'selected' : '',
+                    isCaptain ? 'captain' : '',
+                    isGesp ? 'gesp' : '',
+                  ]
                     .filter(Boolean)
                     .join(' ')
                   return (
@@ -227,7 +257,7 @@ export default function App() {
                         onClick={() => setSelectedStarterId(isSelected ? undefined : player.id)}
                         onDragStart={(event) => event.dataTransfer.setData('text/plain', player.id)}
                       >
-                        {player.name} {isPlaced ? '(geplaatst)' : ''} {isCaptain ? '(Aanvoerder)' : ''}
+                        {player.name} {isPlaced ? '(geplaatst)' : ''} {isCaptain ? '(Aanvoerder)' : ''} {isGesp ? '(Gesp)' : ''}
                       </button>
                     </li>
                   )
@@ -246,15 +276,21 @@ export default function App() {
                   >
                     {groupPositions.map((position) => {
                       const player = players.find((candidate) => candidate.id === placements[position.id])
-                      const isCaptain = player?.id === captainId
-                      const className = ['position-slot', player ? 'occupied' : '', isCaptain ? 'captain' : '']
+                      const isCaptain = player !== undefined && player.id === captainId
+                      const isGesp = player !== undefined && player.id === gespHolderId
+                      const className = [
+                        'position-slot',
+                        player ? 'occupied' : '',
+                        isCaptain ? 'captain' : '',
+                        isGesp ? 'gesp' : '',
+                      ]
                         .filter(Boolean)
                         .join(' ')
                       return (
                         <button
                           type="button"
                           className={className}
-                          aria-label={`${position.label}${player ? `: ${player.name}${isCaptain ? ' (Aanvoerder)' : ''}` : ': vrij'}`}
+                          aria-label={`${position.label}${player ? `: ${player.name}${isCaptain ? ' (Aanvoerder)' : ''}${isGesp ? ' (Gesp)' : ''}` : ': vrij'}`}
                           key={position.id}
                           onClick={() => {
                             if (selectedStarterId) {
@@ -268,6 +304,7 @@ export default function App() {
                         >
                           <span>{position.label}</span>
                           {player && <PlayerAvatar />}
+                          {isGesp && <GespIcon />}
                           <strong>{player?.name ?? 'Vrij'}</strong>
                         </button>
                       )
